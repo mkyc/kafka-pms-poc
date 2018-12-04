@@ -1,0 +1,30 @@
+logging.level:
+  it.mltk.kes: DEBUG
+
+spring:
+
+  cloud:
+    stream:
+      bindings:
+        output:
+          binder: kafka
+          destination: project-events
+          contentType: application/json
+          producer:
+            headerMode: raw # Outbound data has no embedded headers
+        input:
+          destination: project-events
+          contentType: application/json
+          group: project-events-group
+          consumer:
+            useNativeDecoding: true
+            headerMode: raw
+      kafka:
+        streams:
+          binder:
+            brokers: localhost
+            zkNodes: localhost
+
+logger.level:
+  org.apache.kafka: DEBUG
+  org.apache.kafka.clients: ERROR

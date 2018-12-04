@@ -139,7 +139,7 @@ public class Project {
     }
 
     public Project handleEvent(final DomainEvent domainEvent) {
-
+        log.debug("handleEvent : event=" + domainEvent.toString());
         return API.Match(domainEvent).of(
                 Case($(instanceOf(ProjectInitialized.class)), this::projectInitialized),
                 Case($(instanceOf(ProjectRenamed.class)), this::projectRenamed),
