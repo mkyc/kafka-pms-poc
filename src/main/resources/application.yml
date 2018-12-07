@@ -2,29 +2,28 @@ logging.level:
   it.mltk.kes: DEBUG
 
 spring:
-
   cloud:
     stream:
       bindings:
         output:
           binder: kafka
-          destination: project-events
+          destination: channel-name
           contentType: application/json
           producer:
             headerMode: raw # Outbound data has no embedded headers
         input:
-          destination: project-events
+          destination: channel-name
           contentType: application/json
-          group: project-events-group
+          group: project-sink
           consumer:
             useNativeDecoding: true
             headerMode: raw
       kafka:
         streams:
           binder:
-            brokers: localhost
-            zkNodes: localhost
+            brokers: 127.0.0.1
+            zkNodes: 127.0.0.1
 
 logger.level:
   org.apache.kafka: DEBUG
-  org.apache.kafka.clients: ERROR
+  org.apache.kafka.clients: DEBUG

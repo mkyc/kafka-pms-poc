@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Primary;
 @EnableAutoConfiguration
 public class KafkaClientConfig {
 
-    public static final String PROJECT_EVENTS = "project-events";
     public static final String PROJECT_EVENTS_SNAPSHOTS = "project-events-snapshots";
 
     @Bean
