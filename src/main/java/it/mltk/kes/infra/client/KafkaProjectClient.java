@@ -35,6 +35,8 @@ public class KafkaProjectClient implements ProjectClient {
     public void save(final Project project) {
         log.debug( "save : enter" );
 
+        log.debug( "project = " + project.toString());
+
         List<DomainEvent> newChanges = project.changes();
 
         newChanges.forEach( domainEvent -> {
