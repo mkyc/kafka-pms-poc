@@ -17,18 +17,14 @@ public class ProjectModel {
     private String name;
     private Collection<TaskModel> tasks;
 
-    public static ProjectModel fromProject(final Project project ) {
-
+    public static ProjectModel fromProject(final Project project) {
         ProjectModel model = new ProjectModel();
         model.setProjectUuid(project.getProjectUuid());
-        model.setName( project.getName() );
+        model.setName(project.getName());
 
-        if( null != project.getTasks() && !project.getTasks().isEmpty() ) {
+        if (null != project.getTasks() && !project.getTasks().isEmpty()) {
             model.setTasks(project.getTasks().entrySet().stream().map(t -> new TaskModel(t.getKey(), t.getValue().getName())).collect(Collectors.toCollection(ArrayList::new)));
         }
-
         return model;
     }
-
 }
-

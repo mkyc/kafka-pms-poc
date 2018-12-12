@@ -47,7 +47,6 @@ public class Project {
 
     // Builder Methods
     public static Project createFrom(final UUID projectUuid, final Collection<DomainEvent> domainEvents) {
-
         return ofAll(domainEvents).foldLeft(new Project(projectUuid), Project::handleEvent);
     }
 
@@ -62,9 +61,7 @@ public class Project {
     }
 
     public void renameProject(final String name) {
-
         projectRenamed(new ProjectRenamed(name, this.projectUuid, Instant.now()));
-
     }
 
     private Project projectRenamed(final ProjectRenamed event) {
@@ -82,9 +79,7 @@ public class Project {
     }
 
     public void addTask(final UUID taskUuid, final String name) {
-
         taskAdded(new TaskAdded(taskUuid, name, this.projectUuid, Instant.now()));
-
     }
 
     private Project taskAdded(final TaskAdded event) {
@@ -123,19 +118,15 @@ public class Project {
     }
 
     public Map<UUID, Task> getTasks() {
-
         return ImmutableMap.copyOf(this.tasks);
     }
 
     public List<DomainEvent> changes() {
-
         return ImmutableList.copyOf(this.changes);
     }
 
     public void flushChanges() {
-
         this.changes.clear();
-
     }
 
     public Project handleEvent(final DomainEvent domainEvent) {
@@ -149,6 +140,4 @@ public class Project {
                 Case($(), this)
         );
     }
-
 }
-

@@ -1,8 +1,8 @@
 package it.mltk.kes.infra.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.mltk.kes.domain.client.ProjectEventsStreamsProcessor;
 import it.mltk.kes.domain.client.DomainEventSink;
+import it.mltk.kes.domain.client.ProjectEventsStreamsProcessor;
 import it.mltk.kes.domain.event.DomainEvent;
 import it.mltk.kes.domain.model.Project;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +57,9 @@ public class DomainEventSinkImpl implements DomainEventSink {
                         Materialized.<String, Project, KeyValueStore<Bytes, byte[]>>as(PROJECT_EVENTS_SNAPSHOTS)
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(projectSerde)
-                );
+                )
+                .toStream()
+                .peek((k, v) -> log.debug("peek: " + v));
 
         log.debug("process : exit");
     }

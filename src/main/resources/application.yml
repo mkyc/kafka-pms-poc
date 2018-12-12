@@ -7,22 +7,24 @@ spring:
       bindings:
         output:
           binder: kafka
-          destination: channel-name
+          destination: project-events
           contentType: application/json
           producer:
             headerMode: raw # Outbound data has no embedded headers
         input:
-          destination: channel-name
+          destination: project-events
           contentType: application/json
-          group: project-sink
+          group: project-events-sink-v1
           consumer:
             useNativeDecoding: true
             headerMode: raw
+            startOffset: earliest
       kafka:
         streams:
           binder:
             brokers: 127.0.0.1
             zkNodes: 127.0.0.1
+            configuration.commit.interval.ms: 1
 
 logger.level:
   org.apache.kafka: DEBUG

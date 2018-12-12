@@ -19,10 +19,7 @@ public class KafkaClientConfig {
     @Primary
     public ProjectClient projectClient(
             final DomainEventSource domainEventSource,
-            final QueryableStoreRegistry queryableStoreRegistry
-    ) {
-
-        return new KafkaProjectClient( domainEventSource, queryableStoreRegistry );
+            final QueryableStoreRegistry queryableStoreRegistry) {
+        return new KafkaProjectClient(domainEventSource, queryableStoreRegistry);
     }
-
 }
