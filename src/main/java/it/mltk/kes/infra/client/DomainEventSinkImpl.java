@@ -5,6 +5,8 @@ import it.mltk.kes.domain.client.DomainEventSink;
 import it.mltk.kes.domain.client.ProjectEventsStreamsProcessor;
 import it.mltk.kes.domain.event.DomainEvent;
 import it.mltk.kes.domain.model.Project;
+import it.mltk.kes.infra.jpa.model.ListableProject;
+import it.mltk.kes.infra.jpa.service.ListableProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -29,9 +31,11 @@ public class DomainEventSinkImpl implements DomainEventSink {
     private final ObjectMapper mapper;
     private final Serde<DomainEvent> domainEventSerde;
     private final Serde<Project> projectSerde;
+    private final ListableProjectService listableProjectService;
 
-    public DomainEventSinkImpl(final ObjectMapper mapper) {
+    public DomainEventSinkImpl(final ObjectMapper mapper, final ListableProjectService listableProjectService) {
         this.mapper = mapper;
+        this.listableProjectService = listableProjectService;
         this.domainEventSerde = new JsonSerde<>(DomainEvent.class, mapper);
         this.projectSerde = new JsonSerde<>(Project.class, mapper);
     }
@@ -59,7 +63,11 @@ public class DomainEventSinkImpl implements DomainEventSink {
                                 .withValueSerde(projectSerde)
                 )
                 .toStream()
-                .peek((k, v) -> log.debug("peek: " + v));
+                .peek((k, v) -> {
+                    log.debug("peek: " + v);
+                    listableProjectService.store(ListableProject.fromProject(v));
+                    log.debug("stored: " + v);
+                });
 
         log.debug("process : exit");
     }
