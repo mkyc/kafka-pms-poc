@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class Project {
 
     private Project projectInitialized(final ProjectInitialized event) {
         log.debug("projectInitialized : begin");
+        flushChanges();
         this.id = event.getProjectUuid();
         this.changes.add(event);
         log.debug("projectInitialized : end");
@@ -43,5 +45,13 @@ public class Project {
         this.changes.add(event);
         log.debug("projectRenamed : end");
         return this;
+    }
+
+    public List<DomainEvent> changes() {
+        return Collections.unmodifiableList(changes);
+    }
+
+    public void flushChanges() {
+        this.changes.clear();
     }
 }
