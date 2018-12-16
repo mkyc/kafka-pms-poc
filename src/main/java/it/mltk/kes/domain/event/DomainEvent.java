@@ -23,20 +23,20 @@ import static lombok.AccessLevel.NONE;
 })
 @Data
 public abstract class DomainEvent {
+
     private final UUID projectUuid;
 
     @Getter(NONE)
     @JsonIgnore
     private final Instant when;
 
-    public DomainEvent(UUID projectUuid, Instant when) {
+    DomainEvent(final UUID projectUuid, final Instant when) {
         this.projectUuid = projectUuid;
         this.when = when;
     }
 
     @JsonProperty("occurredOn")
     public Instant occurredOn() {
-
         return when;
     }
 

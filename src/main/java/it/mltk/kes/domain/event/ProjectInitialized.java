@@ -18,7 +18,9 @@ import java.util.UUID;
 public class ProjectInitialized extends DomainEvent {
 
     @JsonCreator
-    public ProjectInitialized(@JsonProperty( "projectUuid" ) UUID projectUuid, @JsonProperty( "occurredOn" ) Instant when) {
+    public ProjectInitialized(
+            @JsonProperty("projectUuid") final UUID projectUuid,
+            @JsonProperty("occurredOn") final Instant when) {
         super(projectUuid, when);
     }
 
