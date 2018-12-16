@@ -17,9 +17,7 @@ public class KafkaClientConfig {
 
     @Bean
     @Primary
-    public ProjectClient projectClient(
-            final DomainEventSource domainEventSource,
-            final QueryableStoreRegistry queryableStoreRegistry) {
+    public ProjectClient projectClient(final DomainEventSource domainEventSource, final QueryableStoreRegistry queryableStoreRegistry) {
         return new KafkaProjectClient(domainEventSource, queryableStoreRegistry);
     }
 }

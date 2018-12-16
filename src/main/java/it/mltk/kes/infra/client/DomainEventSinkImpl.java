@@ -2,7 +2,6 @@ package it.mltk.kes.infra.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.mltk.kes.domain.client.DomainEventSink;
-import it.mltk.kes.domain.client.ProjectEventsStreamsProcessor;
 import it.mltk.kes.domain.event.DomainEvent;
 import it.mltk.kes.domain.model.Project;
 import it.mltk.kes.infra.jpa.model.ListableProject;
@@ -17,6 +16,7 @@ import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Serialized;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import static it.mltk.kes.infra.config.KafkaClientConfig.PROJECT_EVENTS_SNAPSHOTS;
 
-@EnableBinding(ProjectEventsStreamsProcessor.class)
+@EnableBinding(DomainEventSinkImpl.DomainEventConsumerBinding.class)
 @Slf4j
 public class DomainEventSinkImpl implements DomainEventSink {
 
@@ -40,7 +40,7 @@ public class DomainEventSinkImpl implements DomainEventSink {
         this.projectSerde = new JsonSerde<>(Project.class, mapper);
     }
 
-    @StreamListener("input")
+    @StreamListener(DomainEventSinkImpl.DomainEventConsumerBinding.INPUT)
     public void process(KStream<Object, byte[]> input) {
         log.debug("process : enter");
         input
@@ -68,8 +68,13 @@ public class DomainEventSinkImpl implements DomainEventSink {
                     listableProjectService.store(ListableProject.fromProject(v));
                     log.debug("stored: " + v);
                 });
-
         log.debug("process : exit");
     }
 
+    interface DomainEventConsumerBinding {
+        String INPUT = "project-events-input";
+
+        @Input("project-events-input")
+        KStream<?, ?> input();
+    }
 }

@@ -8,5 +8,5 @@ public interface ProjectClient {
 
     void save(final Project project);
 
-    Project find( final UUID projectUuid );
+    Project find(final UUID projectUuid);
 }

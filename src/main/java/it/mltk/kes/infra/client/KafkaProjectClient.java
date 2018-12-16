@@ -21,66 +21,57 @@ public class KafkaProjectClient implements ProjectClient {
     private final DomainEventSource domainEventSource;
     private final QueryableStoreRegistry queryableStoreRegistry;
 
-    public KafkaProjectClient(
-            final DomainEventSource domainEventSource,
-            final QueryableStoreRegistry queryableStoreRegistry
-    ) {
-
+    public KafkaProjectClient(final DomainEventSource domainEventSource, final QueryableStoreRegistry queryableStoreRegistry) {
         this.domainEventSource = domainEventSource;
         this.queryableStoreRegistry = queryableStoreRegistry;
-
     }
 
     @Override
     public void save(final Project project) {
-        log.debug( "save : enter" );
-
-        log.debug( "project = " + project.toString());
+        log.debug("save : enter");
+        log.debug("project = " + project.toString());
 
         List<DomainEvent> newChanges = project.changes();
 
-        newChanges.forEach( domainEvent -> {
-            log.debug( "save : domainEvent=" + domainEvent );
+        newChanges.forEach(domainEvent -> {
+            log.debug("save : domainEvent=" + domainEvent);
 
-            this.domainEventSource.publish( domainEvent );
-
+            this.domainEventSource.publish(domainEvent);
         });
         project.flushChanges();
 
-        log.debug( "save : exit" );
+        log.debug("save : exit");
     }
 
 
-
     @Override
-    public Project find( final UUID projectUuid ) {
-        log.debug( "find : enter" );
+    public Project find(final UUID projectUuid) {
+        log.debug("find : enter");
 
         try {
 
-            ReadOnlyKeyValueStore<String, Project> store = queryableStoreRegistry.getQueryableStoreType(PROJECT_EVENTS_SNAPSHOTS, QueryableStoreTypes.<String, Project>keyValueStore() );
+            ReadOnlyKeyValueStore<String, Project> store = queryableStoreRegistry.getQueryableStoreType(PROJECT_EVENTS_SNAPSHOTS, QueryableStoreTypes.<String, Project>keyValueStore());
 
-            log.debug( "find : search=" + projectUuid.toString() );
-            Project project = store.get( projectUuid.toString() );
-            if( null != project ) {
+            log.debug("find : search=" + projectUuid.toString());
+            Project project = store.get(projectUuid.toString());
+            if (null != project) {
 
-                log.debug( "find : before flush project=" + project.toString() );
+                log.debug("find : before flush project=" + project.toString());
                 project.flushChanges();
-                log.debug( "find : project=" + project.toString() );
+                log.debug("find : project=" + project.toString());
 
-                log.debug( "find : exit" );
+                log.debug("find : exit");
                 return project;
 
             } else {
 
-                throw new IllegalArgumentException( "project[" + projectUuid.toString() + "] not found!" );
+                throw new IllegalArgumentException("project[" + projectUuid.toString() + "] not found!");
             }
 
-        } catch( InvalidStateStoreException e ) {
-            log.error( "find : error", e );
+        } catch (InvalidStateStoreException e) {
+            log.error("find : error", e);
         }
-        throw new IllegalArgumentException( "project[" + projectUuid.toString() + "] not found!" );
+        throw new IllegalArgumentException("project[" + projectUuid.toString() + "] not found!");
     }
-
 }
 
