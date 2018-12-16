@@ -9,8 +9,19 @@ spring:
           destination: projects
         domain-event-producer:
           destination: events
+          contentType: application/json
+          producer:
+            headerMode: raw # Outbound data has no embedded headers
         project-consumer:
           destination: projects
+        domain-event-consumer:
+          destination: events
+          contentType: application/json
+          group: domain-event-consumer-v1
+          consumer:
+            useNativeDecoding: true
+            headerMode: raw
+            startOffset: earliest
       kafka:
         streams:
           binder:

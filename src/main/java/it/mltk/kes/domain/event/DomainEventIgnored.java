@@ -1,5 +1,6 @@
 package it.mltk.kes.domain.event;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -13,15 +14,13 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@JsonPropertyOrder({"eventType", "projectUuid", "occurredOn", "name"})
-public class ProjectRenamed extends DomainEvent {
-    private final String name;
+@JsonPropertyOrder({"eventType", "projectUuid", "occurredOn"})
+public class DomainEventIgnored extends DomainEvent {
 
-    public ProjectRenamed(@JsonProperty("projectUuid") UUID projectUuid,
-                          @JsonProperty("occurredOn") Instant when,
-                          @JsonProperty("name") String name) {
+    @JsonCreator
+    public DomainEventIgnored(@JsonProperty("projectUuid") final UUID projectUuid,
+                              @JsonProperty("occurredOn") final Instant when) {
         super(projectUuid, when);
-        this.name = name;
     }
 
     @Override
