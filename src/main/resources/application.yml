@@ -1,38 +1,19 @@
 logging.level:
-  it.mltk.kes: WARN
+  it.mltk.kes: DEBUG
 
 spring:
   cloud:
     stream:
       bindings:
-        project-events-output:
-          binder: kafka
-          destination: project-events
-          contentType: application/json
-          producer:
-            headerMode: raw # Outbound data has no embedded headers
-        project-events-input:
-          destination: project-events
-          contentType: application/json
-          group: project-events-sink-v106
-          consumer:
-            useNativeDecoding: true
-            headerMode: raw
-            startOffset: earliest
+        project-producer:
+          destination: projects
+        project-consumer:
+          destination: projects
       kafka:
         streams:
           binder:
             brokers: 127.0.0.1
             zkNodes: 127.0.0.1
-            configuration.commit.interval.ms: 250
-  h2.console:
-    enabled: true
-    path: /h2
-  jpa:
-    properties.hibernate:
-      show_sql: true
-      format_sql: false
-
 
 logger.level:
   org.apache.kafka: DEBUG
