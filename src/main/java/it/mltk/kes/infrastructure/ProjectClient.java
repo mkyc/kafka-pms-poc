@@ -12,15 +12,12 @@ import java.util.UUID;
 public class ProjectClient {
 
     @Autowired
-    ProjectProducer projectProducer;
-    @Autowired
     DomainEventProducer domainEventProducer;
 
     public void save(Project project) {
         List<DomainEvent> newChanges = project.changes();
 
         newChanges.forEach(domainEvent -> domainEventProducer.publish(domainEvent));
-        projectProducer.publish(project);
         project.flushChanges();
     }
 

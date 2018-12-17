@@ -5,8 +5,6 @@ spring:
   cloud:
     stream:
       bindings:
-        project-producer:
-          destination: projects
         domain-event-producer:
           destination: events
           contentType: application/json
@@ -27,6 +25,7 @@ spring:
           binder:
             brokers: 127.0.0.1
             zkNodes: 127.0.0.1
+            configuration.commit.interval.ms: 100
 
 logger.level:
   org.apache.kafka: DEBUG

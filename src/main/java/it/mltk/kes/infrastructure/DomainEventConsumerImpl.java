@@ -10,6 +10,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Serialized;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -57,7 +58,8 @@ public class DomainEventConsumerImpl implements DomainEventConsumer {
                                 .withValueSerde(projectSerde)
                 )
                 .toStream()
-                .peek((k, v) -> log.debug("key: " + k + " project: " + v));
+                .peek((k, v) -> log.debug("key: " + k + " project: " + v))
+                .to("projects", Produced.with(Serdes.String(), projectSerde));
     }
 
     interface DomainEventConsumerBinding {
