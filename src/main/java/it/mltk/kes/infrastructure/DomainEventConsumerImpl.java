@@ -20,6 +20,8 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 
 import java.io.IOException;
 
+import static it.mltk.kes.infrastructure.ProjectClient.PROJECTS_STORE;
+
 @EnableBinding(DomainEventConsumerImpl.DomainEventConsumerBinding.class)
 @Slf4j
 public class DomainEventConsumerImpl implements DomainEventConsumer {
@@ -27,8 +29,6 @@ public class DomainEventConsumerImpl implements DomainEventConsumer {
     private final Serde<DomainEvent> domainEventSerde;
     private final Serde<Project> projectSerde;
     ObjectMapper objectMapper;
-
-    private String PROJECTS_STORE = "projects-store";
 
     DomainEventConsumerImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
