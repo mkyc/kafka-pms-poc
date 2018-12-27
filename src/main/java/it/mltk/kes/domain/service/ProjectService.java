@@ -1,19 +1,19 @@
 package it.mltk.kes.domain.service;
 
 import it.mltk.kes.domain.model.Project;
-import it.mltk.kes.infrastructure.ProjectClient;
+import it.mltk.kes.infrastructure.streams.client.ProjectClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@Service
 @Slf4j
 public class ProjectService {
 
-    @Autowired
-    ProjectClient projectClient;
+    private final ProjectClient projectClient;
+
+    public ProjectService(ProjectClient projectClient) {
+        this.projectClient = projectClient;
+    }
 
     public UUID initProject() {
 

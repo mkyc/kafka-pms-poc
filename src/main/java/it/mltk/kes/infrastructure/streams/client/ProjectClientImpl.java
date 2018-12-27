@@ -1,32 +1,34 @@
-package it.mltk.kes.infrastructure;
+package it.mltk.kes.infrastructure.streams.client;
 
-import it.mltk.kes.domain.event.DomainEvent;
+import it.mltk.kes.domain.event.ProjectDomainEvent;
 import it.mltk.kes.domain.model.Project;
+import it.mltk.kes.infrastructure.streams.producer.DomainEventProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.binder.kafka.streams.QueryableStoreRegistry;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
+import static it.mltk.kes.infrastructure.streams.configuration.ClientsConfig.PROJECTS_STORE;
+
 @Component
 @Slf4j
-public class ProjectClient {
+public class ProjectClientImpl implements ProjectClient {
 
-    static String PROJECTS_STORE = "projects-store";
+    private final DomainEventProducer domainEventProducer;
+    private final QueryableStoreRegistry queryableStoreRegistry;
 
-    @Autowired
-    DomainEventProducer domainEventProducer;
-
-    @Autowired
-    QueryableStoreRegistry queryableStoreRegistry;
+    public ProjectClientImpl(final DomainEventProducer domainEventProducer, final QueryableStoreRegistry queryableStoreRegistry) {
+        this.domainEventProducer = domainEventProducer;
+        this.queryableStoreRegistry = queryableStoreRegistry;
+    }
 
     public void save(Project project) {
-        List<DomainEvent> newChanges = project.changes();
+        List<ProjectDomainEvent> newChanges = project.changes();
 
         newChanges.forEach(domainEvent -> domainEventProducer.publish(domainEvent));
         project.flushChanges();

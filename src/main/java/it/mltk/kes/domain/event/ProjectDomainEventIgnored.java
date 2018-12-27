@@ -15,11 +15,11 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @JsonPropertyOrder({"eventType", "projectUuid", "occurredOn"})
-public class DomainEventIgnored extends DomainEvent {
+public class ProjectDomainEventIgnored extends ProjectDomainEvent {
 
     @JsonCreator
-    public DomainEventIgnored(@JsonProperty("projectUuid") final UUID projectUuid,
-                              @JsonProperty("occurredOn") final Instant when) {
+    public ProjectDomainEventIgnored(@JsonProperty("projectUuid") final UUID projectUuid,
+                                     @JsonProperty("occurredOn") final Instant when) {
         super(projectUuid, when);
     }
 

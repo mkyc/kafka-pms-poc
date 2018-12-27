@@ -15,14 +15,14 @@ import static lombok.AccessLevel.NONE;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "eventType",
-        defaultImpl = DomainEventIgnored.class
+        defaultImpl = ProjectDomainEventIgnored.class
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ProjectInitialized.class, name = "ProjectInitialized"),
         @JsonSubTypes.Type(value = ProjectRenamed.class, name = "ProjectRenamed")
 })
 @Data
-public abstract class DomainEvent {
+public abstract class ProjectDomainEvent {
 
     private final UUID projectUuid;
 
@@ -30,7 +30,7 @@ public abstract class DomainEvent {
     @JsonIgnore
     private final Instant when;
 
-    DomainEvent(final UUID projectUuid, final Instant when) {
+    ProjectDomainEvent(final UUID projectUuid, final Instant when) {
         this.projectUuid = projectUuid;
         this.when = when;
     }

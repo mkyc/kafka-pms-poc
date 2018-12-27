@@ -15,7 +15,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @JsonPropertyOrder({"eventType", "projectUuid", "occurredOn", "name"})
-public class ProjectRenamed extends DomainEvent {
+public class ProjectRenamed extends ProjectDomainEvent {
     private final String name;
 
     @JsonCreator

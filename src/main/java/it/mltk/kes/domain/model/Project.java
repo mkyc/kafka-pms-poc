@@ -1,10 +1,9 @@
 package it.mltk.kes.domain.model;
 
-import it.mltk.kes.domain.event.DomainEvent;
+import it.mltk.kes.domain.event.ProjectDomainEvent;
 import it.mltk.kes.domain.event.ProjectInitialized;
 import it.mltk.kes.domain.event.ProjectRenamed;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +20,15 @@ import static lombok.AccessLevel.NONE;
 @Slf4j
 @NoArgsConstructor
 public class Project {
+
+    public static final String NEW_PROJECT_NAME = "New Project";
+
     @Setter(NONE)
     private UUID id;
     @Setter(NONE)
-    private String name = "New Project";
+    private String name = NEW_PROJECT_NAME;
     @Setter(NONE)
-    private List<DomainEvent> changes = new ArrayList<>();
+    private List<ProjectDomainEvent> changes = new ArrayList<>();
 
     public Project(UUID uuid) {
         projectInitialized(new ProjectInitialized(uuid, Instant.now()));
@@ -53,7 +55,7 @@ public class Project {
         return this;
     }
 
-    public List<DomainEvent> changes() {
+    public List<ProjectDomainEvent> changes() {
         return Collections.unmodifiableList(changes);
     }
 
@@ -61,12 +63,12 @@ public class Project {
         this.changes.clear();
     }
 
-    public Project handleEvent(final DomainEvent domainEvent) {
-        log.debug("handleEvent : event=" + domainEvent.toString());
-        if (domainEvent instanceof ProjectInitialized) {
-            this.projectInitialized((ProjectInitialized) domainEvent);
-        } else if (domainEvent instanceof ProjectRenamed) {
-            this.projectRenamed((ProjectRenamed) domainEvent);
+    public Project handleEvent(final ProjectDomainEvent projectDomainEvent) {
+        log.debug("handleEvent : event=" + projectDomainEvent.toString());
+        if (projectDomainEvent instanceof ProjectInitialized) {
+            this.projectInitialized((ProjectInitialized) projectDomainEvent);
+        } else if (projectDomainEvent instanceof ProjectRenamed) {
+            this.projectRenamed((ProjectRenamed) projectDomainEvent);
         }
         return this;
     }
