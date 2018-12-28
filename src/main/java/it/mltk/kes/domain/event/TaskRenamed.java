@@ -15,18 +15,21 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @JsonPropertyOrder({"eventType", "projectUuid", "occurredOn", "taskUuid"})
-public class TaskDeleted extends ProjectDomainEvent {
+public class TaskRenamed extends ProjectDomainEvent {
 
     private final UUID taskUuid;
+    private final String name;
 
     @JsonCreator
-    public TaskDeleted(
+    public TaskRenamed(
             @JsonProperty("taskUuid") final UUID taskUuid,
+            @JsonProperty("name") final String name,
             @JsonProperty("projectUuid") final UUID projectUuid,
             @JsonProperty("occurredOn") final Instant when
     ) {
         super(projectUuid, when);
         this.taskUuid = taskUuid;
+        this.name = name;
     }
 
     @Override
@@ -34,4 +37,5 @@ public class TaskDeleted extends ProjectDomainEvent {
     public String eventType() {
         return this.getClass().getSimpleName();
     }
+
 }

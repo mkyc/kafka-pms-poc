@@ -1,7 +1,7 @@
 package it.mltk.kes.domain.service;
 
-import it.mltk.kes.domain.client.ProjectClient;
 import it.mltk.kes.domain.model.Project;
+import it.mltk.kes.infrastructure.streams.client.ProjectClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
@@ -9,70 +9,49 @@ import java.util.UUID;
 @Slf4j
 public class ProjectService {
 
-    private final ProjectClient client;
+    private final ProjectClient projectClient;
 
-    public ProjectService(final ProjectClient client) {
-
-        this.client = client;
-
+    public ProjectService(ProjectClient projectClient) {
+        this.projectClient = projectClient;
     }
 
-    public UUID createProject() {
-        log.debug("createProject : enter");
-
+    public UUID initProject() {
         Project project = new Project(UUID.randomUUID());
-        this.client.save(project);
-
-        return project.getProjectUuid();
+        log.debug("project : " + project);
+        projectClient.save(project);
+        return project.getId();
     }
 
-    public void renameProject(final UUID projectUuid, final String name) {
-        log.debug("renameProject : enter");
-
-        Project project = this.client.find(projectUuid);
+    public void renameProject(UUID projectUuid, String name) {
+        Project project = projectClient.find(projectUuid);
         project.renameProject(name);
-        this.client.save(project);
+        projectClient.save(project);
     }
 
-    public UUID addTask(final UUID projectUuid, final String name) {
-        log.debug("addTask : enter");
-
-        Project project = this.client.find(projectUuid);
-
+    public UUID addTask(UUID projectUuid, String taskName) {
+        Project project = projectClient.find(projectUuid);
         UUID taskUuid = UUID.randomUUID();
-        project.addTask(taskUuid, name);
-
-        this.client.save(project);
-
+        project.addTask(taskUuid, taskName);
+        projectClient.save(project);
         return taskUuid;
     }
 
-    public void renameTask(final UUID projectUuid, final UUID taskUuid, final String name) {
-        log.debug("renameTask : enter");
-
-        Project project = this.client.find(projectUuid);
-        project.renameTask(taskUuid, name);
-
-        this.client.save(project);
+    public void deleteTask(final UUID projectUuid, final UUID taskUuid) {
+        Project project = projectClient.find(projectUuid);
+        project.deleteTask(taskUuid);
+        projectClient.save(project);
     }
 
-    public void deleteTask(final UUID projectUuid, final UUID taskUuid) {
-        log.debug("deleteTask : enter");
-
-        Project project = this.client.find(projectUuid);
-        project.deleteTask(taskUuid);
-
-        this.client.save(project);
+    public void renameTask(final UUID projectUuid, final UUID taskUuid, final String name) {
+        Project project = projectClient.find(projectUuid);
+        project.renameTask(taskUuid, name);
+        projectClient.save(project);
     }
 
     public Project find( final UUID projectUuid ) {
         log.debug( "find : enter" );
-
-        Project project = this.client.find( projectUuid );
+        Project project = projectClient.find( projectUuid );
         log.debug( "find : project=" + project );
-
-        log.debug( "find : exit" );
         return project;
     }
-
 }

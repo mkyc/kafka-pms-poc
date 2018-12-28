@@ -1,6 +1,6 @@
-package it.mltk.kes.infra.jpa.repository;
+package it.mltk.kes.infrastructure.jpa.repository;
 
-import it.mltk.kes.infra.jpa.model.ListableProject;
+import it.mltk.kes.infrastructure.jpa.model.ListableProject;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

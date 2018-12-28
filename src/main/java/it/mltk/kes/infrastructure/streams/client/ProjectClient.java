@@ -1,4 +1,4 @@
-package it.mltk.kes.domain.client;
+package it.mltk.kes.infrastructure.streams.client;
 
 import it.mltk.kes.domain.model.Project;
 

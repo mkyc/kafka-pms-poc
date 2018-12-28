@@ -14,41 +14,35 @@ import static lombok.AccessLevel.NONE;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
         property = "eventType",
-        defaultImpl = DomainEventIgnored.class
+        defaultImpl = ProjectDomainEventIgnored.class
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type( value = ProjectInitialized.class, name = "ProjectInitialized" ),
-        @JsonSubTypes.Type( value = ProjectRenamed.class, name = "ProjectRenamed"),
-        @JsonSubTypes.Type( value = TaskAdded.class, name = "TaskAdded"),
-        @JsonSubTypes.Type( value = TaskNameUpdated.class, name = "TaskNameUpdated"),
-        @JsonSubTypes.Type( value = TaskDeleted.class, name = "TaskDeleted")
+        @JsonSubTypes.Type(value = ProjectInitialized.class, name = "ProjectInitialized"),
+        @JsonSubTypes.Type(value = ProjectRenamed.class, name = "ProjectRenamed"),
+        @JsonSubTypes.Type(value = TaskAdded.class, name = "TaskAdded"),
+        @JsonSubTypes.Type(value = TaskDeleted.class, name = "TaskDeleted"),
+        @JsonSubTypes.Type(value = TaskRenamed.class, name = "TaskRenamed")
 })
 @Data
-public abstract class DomainEvent {
+public abstract class ProjectDomainEvent {
 
     private final UUID projectUuid;
 
-    @Getter( NONE )
+    @Getter(NONE)
     @JsonIgnore
     private final Instant when;
 
-    DomainEvent( final UUID projectUuid, final Instant when ) {
-
+    ProjectDomainEvent(final UUID projectUuid, final Instant when) {
         this.projectUuid = projectUuid;
         this.when = when;
-
     }
 
-    @JsonProperty( "occurredOn" )
+    @JsonProperty("occurredOn")
     public Instant occurredOn() {
-
         return when;
     }
 
-    @JsonProperty( "eventType" )
+    @JsonProperty("eventType")
     public abstract String eventType();
-
 }
-

@@ -1,56 +1,44 @@
-package it.mltk.kes.infra.client;
+package it.mltk.kes.infrastructure.streams.client;
 
-import it.mltk.kes.domain.client.DomainEventSource;
-import it.mltk.kes.domain.client.ProjectClient;
-import it.mltk.kes.domain.event.DomainEvent;
+import it.mltk.kes.domain.event.ProjectDomainEvent;
 import it.mltk.kes.domain.model.Project;
+import it.mltk.kes.infrastructure.streams.producer.DomainEventProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.cloud.stream.binder.kafka.streams.QueryableStoreRegistry;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
-import static it.mltk.kes.infra.config.KafkaClientConfig.PROJECT_EVENTS_SNAPSHOTS;
+import static it.mltk.kes.infrastructure.configuration.StreamsClientsConfig.PROJECTS_STORE;
 
+@Component
 @Slf4j
-public class KafkaProjectClient implements ProjectClient {
+public class ProjectClientImpl implements ProjectClient {
 
-    private final DomainEventSource domainEventSource;
+    private final DomainEventProducer domainEventProducer;
     private final QueryableStoreRegistry queryableStoreRegistry;
 
-    public KafkaProjectClient(final DomainEventSource domainEventSource, final QueryableStoreRegistry queryableStoreRegistry) {
-        this.domainEventSource = domainEventSource;
+    public ProjectClientImpl(final DomainEventProducer domainEventProducer, final QueryableStoreRegistry queryableStoreRegistry) {
+        this.domainEventProducer = domainEventProducer;
         this.queryableStoreRegistry = queryableStoreRegistry;
     }
 
-    @Override
-    public void save(final Project project) {
-        log.debug("save : enter");
-        log.debug("project = " + project.toString());
+    public void save(Project project) {
+        List<ProjectDomainEvent> newChanges = project.changes();
 
-        List<DomainEvent> newChanges = project.changes();
-
-        newChanges.forEach(domainEvent -> {
-            log.debug("save : domainEvent=" + domainEvent);
-
-            this.domainEventSource.publish(domainEvent);
-        });
+        newChanges.forEach(domainEvent -> domainEventProducer.publish(domainEvent));
         project.flushChanges();
-
-        log.debug("save : exit");
     }
 
-
-    @Override
-    public Project find(final UUID projectUuid) {
+    public Project find(UUID projectUuid) {
         log.debug("find : enter");
-
         try {
 
-            ReadOnlyKeyValueStore<String, Project> store = queryableStoreRegistry.getQueryableStoreType(PROJECT_EVENTS_SNAPSHOTS, QueryableStoreTypes.<String, Project>keyValueStore());
+            ReadOnlyKeyValueStore<String, Project> store = queryableStoreRegistry.getQueryableStoreType(PROJECTS_STORE, QueryableStoreTypes.keyValueStore());
 
             log.debug("find : search=" + projectUuid.toString());
             Project project = store.get(projectUuid.toString());
@@ -64,7 +52,6 @@ public class KafkaProjectClient implements ProjectClient {
                 return project;
 
             } else {
-
                 throw new IllegalArgumentException("project[" + projectUuid.toString() + "] not found!");
             }
 
@@ -74,4 +61,3 @@ public class KafkaProjectClient implements ProjectClient {
         throw new IllegalArgumentException("project[" + projectUuid.toString() + "] not found!");
     }
 }
-

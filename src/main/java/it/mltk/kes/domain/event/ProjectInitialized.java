@@ -12,25 +12,22 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Data
-@EqualsAndHashCode( callSuper = true )
-@ToString( callSuper = true )
-@JsonPropertyOrder({ "eventType", "projectUuid", "occurredOn" })
-public class ProjectInitialized extends DomainEvent {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@JsonPropertyOrder({"eventType", "projectUuid", "occurredOn"})
+public class ProjectInitialized extends ProjectDomainEvent {
 
     @JsonCreator
     public ProjectInitialized(
-            @JsonProperty( "projectUuid" ) final UUID projectUuid,
-            @JsonProperty( "occurredOn" ) final Instant when
+            @JsonProperty("projectUuid") final UUID projectUuid,
+            @JsonProperty("occurredOn") final Instant when
     ) {
-        super( projectUuid, when );
+        super(projectUuid, when);
     }
 
     @Override
     @JsonIgnore
     public String eventType() {
-
         return this.getClass().getSimpleName();
     }
-
 }
-
