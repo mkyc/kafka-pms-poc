@@ -21,7 +21,7 @@ spring:
         domain-event-to-listable-consumer:
           destination: events
           contentType: application/json
-          group: domain-event-to-listable-consumer-v2
+          group: domain-event-to-listable-consumer-v1
           consumer:
             useNativeDecoding: true
             headerMode: raw
