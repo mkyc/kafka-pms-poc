@@ -3,6 +3,7 @@ package it.mltk.kes.delivery.controller;
 import it.mltk.kes.delivery.dto.ProjectDto;
 import it.mltk.kes.domain.model.Project;
 import it.mltk.kes.domain.service.ProjectService;
+import it.mltk.kes.infrastructure.jpa.service.ListableProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ public class ProjectController {
 
     @Autowired
     ProjectService projectService;
+
+    @Autowired
+    ListableProjectService listableProjectService;
 
     @PostMapping("/")
     public ResponseEntity createProject(
@@ -86,10 +90,15 @@ public class ProjectController {
     public ResponseEntity project(
             @PathVariable("projectUuid") UUID projectUuid
     ) {
-        log.debug("project : enter");
         Project project = projectService.find(projectUuid);
         log.debug("project : project=" + project.toString());
         return ResponseEntity
                 .ok(ProjectDto.fromProject(project));
+    }
+
+    @GetMapping("/")
+    public ResponseEntity projects() {
+        return ResponseEntity
+                .ok(listableProjectService.getAll());
     }
 }

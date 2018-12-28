@@ -16,17 +16,17 @@ public class ProjectDto {
     private Collection<TaskDto> tasks;
 
     public static ProjectDto fromProject(final Project project) {
-        ProjectDto model = new ProjectDto();
-        model.setProjectUuid(project.getId());
-        model.setName(project.getName());
+        ProjectDto projectDto = new ProjectDto();
+        projectDto.setProjectUuid(project.getId());
+        projectDto.setName(project.getName());
 
         if (null != project.getTasks() && !project.getTasks().isEmpty()) {
-            model.setTasks(
+            projectDto.setTasks(
                     project.getTasks().entrySet()
                             .stream()
                             .map(t -> new TaskDto(t.getKey(), t.getValue().getName()))
                             .collect(Collectors.toCollection(ArrayList::new)));
         }
-        return model;
+        return projectDto;
     }
 }
