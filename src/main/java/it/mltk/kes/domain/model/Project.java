@@ -94,6 +94,10 @@ public class Project {
         return Collections.unmodifiableList(changes);
     }
 
+    public Map<UUID, Task> getTasks() {
+        return Collections.unmodifiableMap(new LinkedHashMap<>(this.tasks));
+    }
+
     public void flushChanges() {
         this.changes.clear();
     }

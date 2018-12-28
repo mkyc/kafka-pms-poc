@@ -47,4 +47,11 @@ public class ProjectService {
         project.renameTask(taskUuid, name);
         projectClient.save(project);
     }
+
+    public Project find( final UUID projectUuid ) {
+        log.debug( "find : enter" );
+        Project project = projectClient.find( projectUuid );
+        log.debug( "find : project=" + project );
+        return project;
+    }
 }
