@@ -3,16 +3,15 @@ package it.mltk.kes.domain.model;
 import it.mltk.kes.domain.event.ProjectDomainEvent;
 import it.mltk.kes.domain.event.ProjectInitialized;
 import it.mltk.kes.domain.event.ProjectRenamed;
+import it.mltk.kes.domain.event.TaskAdded;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static lombok.AccessLevel.NONE;
 
@@ -27,6 +26,9 @@ public class Project {
     private UUID id;
     @Setter(NONE)
     private String name = NEW_PROJECT_NAME;
+    @Getter(NONE)
+    @Setter(NONE)
+    private Map<UUID, Task> tasks = new HashMap<>();
     @Setter(NONE)
     private List<ProjectDomainEvent> changes = new ArrayList<>();
 
@@ -55,6 +57,18 @@ public class Project {
         return this;
     }
 
+    public void addTask(final UUID taskUuid, final String name) {
+        taskAdded(new TaskAdded(taskUuid, name, this.id, Instant.now()));
+    }
+
+    private Project taskAdded(final TaskAdded event) {
+        log.debug("taskAdded : begin");
+        this.tasks.put(event.getTaskUuid(), event.getTask());
+        this.changes.add(event);
+        log.debug("taskAdded : end");
+        return this;
+    }
+
     public List<ProjectDomainEvent> changes() {
         return Collections.unmodifiableList(changes);
     }
@@ -69,6 +83,8 @@ public class Project {
             this.projectInitialized((ProjectInitialized) projectDomainEvent);
         } else if (projectDomainEvent instanceof ProjectRenamed) {
             this.projectRenamed((ProjectRenamed) projectDomainEvent);
+        } else if (projectDomainEvent instanceof TaskAdded) {
+            this.taskAdded((TaskAdded) projectDomainEvent);
         }
         return this;
     }

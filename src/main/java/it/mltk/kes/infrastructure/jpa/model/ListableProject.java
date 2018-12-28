@@ -2,6 +2,7 @@ package it.mltk.kes.infrastructure.jpa.model;
 
 import it.mltk.kes.domain.event.ProjectDomainEvent;
 import it.mltk.kes.domain.event.ProjectRenamed;
+import it.mltk.kes.domain.event.TaskAdded;
 import it.mltk.kes.domain.model.Project;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +32,8 @@ public class ListableProject {
 
         if (event instanceof ProjectRenamed) {
             project.setName(((ProjectRenamed) event).getName());
+        } else if (event instanceof TaskAdded) {
+            project.setName(null);
         }
 
         return project;

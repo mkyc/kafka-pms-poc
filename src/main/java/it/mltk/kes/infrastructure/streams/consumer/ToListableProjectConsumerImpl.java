@@ -28,7 +28,6 @@ public class ToListableProjectConsumerImpl implements ToListableProjectConsumer 
     @SuppressWarnings("Duplicates")
     @StreamListener(DomainEventToListableConsumerBinding.INPUT)
     public void process(KStream<Object, byte[]> input) {
-
         input
                 .map((key, value) -> {
                     try {
@@ -40,6 +39,7 @@ public class ToListableProjectConsumerImpl implements ToListableProjectConsumer 
                     return null;
                 })
                 .peek((key, value) -> log.debug("key: " + key + " listableProject: " + value))
+                .filter(((key, value) -> null != value))
                 .peek(((key, value) -> listableProjectService.store(value)));
     }
 

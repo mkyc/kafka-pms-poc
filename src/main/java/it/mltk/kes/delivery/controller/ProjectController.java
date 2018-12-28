@@ -25,9 +25,17 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectUuid}")
-    public ResponseEntity renameProject(@PathVariable("projectUuid") UUID projectUuid, @RequestParam( "name" ) String name, final UriComponentsBuilder uriComponentsBuilder ) {
+    public ResponseEntity renameProject(@PathVariable("projectUuid") UUID projectUuid, @RequestParam("name") String name, final UriComponentsBuilder uriComponentsBuilder) {
         projectService.renameProject(projectUuid, name);
 
         return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/{projectUuid}/tasks")
+    public ResponseEntity addTaskToProject(@PathVariable("projectUuid") UUID projectUuid, @RequestParam("name") String name, final UriComponentsBuilder uriComponentsBuilder) {
+        UUID taskUuid = projectService.addTask(projectUuid, name);
+        return ResponseEntity
+                .created(uriComponentsBuilder.path("/projects/{projectUuid}/tasks/{taskUuid}").buildAndExpand(projectUuid, taskUuid).toUri())
+                .build();
     }
 }

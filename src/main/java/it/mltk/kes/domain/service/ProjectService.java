@@ -16,13 +16,9 @@ public class ProjectService {
     }
 
     public UUID initProject() {
-
         Project project = new Project(UUID.randomUUID());
-
         log.debug("project : " + project);
-
         projectClient.save(project);
-
         return project.getId();
     }
 
@@ -30,5 +26,13 @@ public class ProjectService {
         Project project = projectClient.find(projectUuid);
         project.renameProject(name);
         projectClient.save(project);
+    }
+
+    public UUID addTask(UUID projectUuid, String taskName) {
+        Project project = projectClient.find(projectUuid);
+        UUID taskUuid = UUID.randomUUID();
+        project.addTask(taskUuid, taskName);
+        projectClient.save(project);
+        return taskUuid;
     }
 }
