@@ -28,7 +28,7 @@ do
         echo "$DT task $TASK"
         for l in `seq 1 ${SIZE}`;
         do
-            RENAME_TASK_COMMAND="curl -X PUT $TASK?name=task$l"
+            RENAME_TASK_COMMAND="curl -X PATCH $TASK?name=task$l"
             eval ${RENAME_TASK_COMMAND}
             ((COUNTER++))
         done
