@@ -41,4 +41,10 @@ public class ProjectService {
         project.deleteTask(taskUuid);
         projectClient.save(project);
     }
+
+    public void renameTask(final UUID projectUuid, final UUID taskUuid, final String name) {
+        Project project = projectClient.find(projectUuid);
+        project.renameTask(taskUuid, name);
+        projectClient.save(project);
+    }
 }

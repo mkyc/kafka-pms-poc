@@ -14,14 +14,14 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@JsonPropertyOrder({"eventType", "projectUuid", "occurredOn", "taskUuid", "name"})
-public class TaskAdded extends ProjectDomainEvent {
+@JsonPropertyOrder({"eventType", "projectUuid", "occurredOn", "taskUuid"})
+public class TaskRenamed extends ProjectDomainEvent {
 
     private final UUID taskUuid;
     private final String name;
 
     @JsonCreator
-    public TaskAdded(
+    public TaskRenamed(
             @JsonProperty("taskUuid") final UUID taskUuid,
             @JsonProperty("name") final String name,
             @JsonProperty("projectUuid") final UUID projectUuid,
@@ -37,4 +37,5 @@ public class TaskAdded extends ProjectDomainEvent {
     public String eventType() {
         return this.getClass().getSimpleName();
     }
+
 }

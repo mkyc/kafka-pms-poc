@@ -38,6 +38,8 @@ public class ListableProject {
             project.setName(null);
         } else if (event instanceof TaskDeleted) {
             project.setName(null);
+        } else if (event instanceof TaskRenamed) {
+            project.setName(null);
         }
 
         return project;

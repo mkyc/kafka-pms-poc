@@ -60,7 +60,7 @@ public class Project {
 
     private Project taskAdded(final TaskAdded event) {
         log.debug("taskAdded : begin");
-        this.tasks.put(event.getTaskUuid(), event.getTask());
+        this.tasks.put(event.getTaskUuid(), new Task(event.getName()));
         this.changes.add(event);
         log.debug("taskAdded : end");
         return this;
@@ -75,6 +75,18 @@ public class Project {
         this.tasks.remove(event.getTaskUuid());
         this.changes.add(event);
         log.debug("taskDeleted : end");
+        return this;
+    }
+
+    public void renameTask(final UUID taskUuid, final String name) {
+        taskRenamed(new TaskRenamed(taskUuid, name, this.id, Instant.now()));
+    }
+
+    private Project taskRenamed(TaskRenamed event) {
+        log.debug("taskRenamed : begin");
+        this.tasks.replace(event.getTaskUuid(), new Task(event.getName()));
+        this.changes.add(event);
+        log.debug("taskRenamed : end");
         return this;
     }
 
@@ -95,7 +107,9 @@ public class Project {
         } else if (event instanceof TaskAdded) {
             this.taskAdded((TaskAdded) event);
         } else if (event instanceof TaskDeleted) {
-            this.taskDeleted((TaskDeleted)event);
+            this.taskDeleted((TaskDeleted) event);
+        } else if (event instanceof TaskRenamed) {
+            this.taskRenamed((TaskRenamed) event);
         }
         return this;
     }

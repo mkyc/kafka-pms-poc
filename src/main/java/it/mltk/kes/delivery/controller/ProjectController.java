@@ -44,4 +44,10 @@ public class ProjectController {
         projectService.deleteTask(projectUuid, taskUuid);
         return ResponseEntity.accepted().build();
     }
+
+    @PatchMapping("/{projectUuid}/tasks/{taskUuid}")
+    public ResponseEntity renameTaskInProject(@PathVariable("projectUuid") UUID projectUuid, @PathVariable("taskUuid") UUID taskUuid, @RequestParam("name") String name) {
+        projectService.renameTask(projectUuid, taskUuid, name);
+        return ResponseEntity.accepted().build();
+    }
 }

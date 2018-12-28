@@ -21,7 +21,8 @@ import static lombok.AccessLevel.NONE;
         @JsonSubTypes.Type(value = ProjectInitialized.class, name = "ProjectInitialized"),
         @JsonSubTypes.Type(value = ProjectRenamed.class, name = "ProjectRenamed"),
         @JsonSubTypes.Type(value = TaskAdded.class, name = "TaskAdded"),
-        @JsonSubTypes.Type(value = TaskDeleted.class, name = "TaskDeleted")
+        @JsonSubTypes.Type(value = TaskDeleted.class, name = "TaskDeleted"),
+        @JsonSubTypes.Type(value = TaskRenamed.class, name = "TaskRenamed")
 })
 @Data
 public abstract class ProjectDomainEvent {
