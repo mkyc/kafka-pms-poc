@@ -20,7 +20,8 @@ public class ProjectInitialized extends ProjectDomainEvent {
     @JsonCreator
     public ProjectInitialized(
             @JsonProperty("projectUuid") final UUID projectUuid,
-            @JsonProperty("occurredOn") final Instant when) {
+            @JsonProperty("occurredOn") final Instant when
+    ) {
         super(projectUuid, when);
     }
 

@@ -1,9 +1,6 @@
 package it.mltk.kes.domain.model;
 
-import it.mltk.kes.domain.event.ProjectDomainEvent;
-import it.mltk.kes.domain.event.ProjectInitialized;
-import it.mltk.kes.domain.event.ProjectRenamed;
-import it.mltk.kes.domain.event.TaskAdded;
+import it.mltk.kes.domain.event.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,6 +66,18 @@ public class Project {
         return this;
     }
 
+    public void deleteTask(final UUID taskUuid) {
+        taskDeleted(new TaskDeleted(taskUuid, this.id, Instant.now()));
+    }
+
+    private Project taskDeleted(TaskDeleted event) {
+        log.debug("taskDeleted : begin");
+        this.tasks.remove(event.getTaskUuid());
+        this.changes.add(event);
+        log.debug("taskDeleted : end");
+        return this;
+    }
+
     public List<ProjectDomainEvent> changes() {
         return Collections.unmodifiableList(changes);
     }
@@ -77,14 +86,16 @@ public class Project {
         this.changes.clear();
     }
 
-    public Project handleEvent(final ProjectDomainEvent projectDomainEvent) {
-        log.debug("handleEvent : event=" + projectDomainEvent.toString());
-        if (projectDomainEvent instanceof ProjectInitialized) {
-            this.projectInitialized((ProjectInitialized) projectDomainEvent);
-        } else if (projectDomainEvent instanceof ProjectRenamed) {
-            this.projectRenamed((ProjectRenamed) projectDomainEvent);
-        } else if (projectDomainEvent instanceof TaskAdded) {
-            this.taskAdded((TaskAdded) projectDomainEvent);
+    public Project handleEvent(final ProjectDomainEvent event) {
+        log.debug("handleEvent : event=" + event.toString());
+        if (event instanceof ProjectInitialized) {
+            this.projectInitialized((ProjectInitialized) event);
+        } else if (event instanceof ProjectRenamed) {
+            this.projectRenamed((ProjectRenamed) event);
+        } else if (event instanceof TaskAdded) {
+            this.taskAdded((TaskAdded) event);
+        } else if (event instanceof TaskDeleted) {
+            this.taskDeleted((TaskDeleted)event);
         }
         return this;
     }

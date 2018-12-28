@@ -35,4 +35,10 @@ public class ProjectService {
         projectClient.save(project);
         return taskUuid;
     }
+
+    public void deleteTask(final UUID projectUuid, final UUID taskUuid) {
+        Project project = projectClient.find(projectUuid);
+        project.deleteTask(taskUuid);
+        projectClient.save(project);
+    }
 }

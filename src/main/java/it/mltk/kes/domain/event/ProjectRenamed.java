@@ -21,7 +21,8 @@ public class ProjectRenamed extends ProjectDomainEvent {
     @JsonCreator
     public ProjectRenamed(@JsonProperty("projectUuid") UUID projectUuid,
                           @JsonProperty("occurredOn") Instant when,
-                          @JsonProperty("name") String name) {
+                          @JsonProperty("name") String name
+    ) {
         super(projectUuid, when);
         this.name = name;
     }

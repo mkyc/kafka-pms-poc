@@ -38,4 +38,10 @@ public class ProjectController {
                 .created(uriComponentsBuilder.path("/projects/{projectUuid}/tasks/{taskUuid}").buildAndExpand(projectUuid, taskUuid).toUri())
                 .build();
     }
+
+    @DeleteMapping("/{projectUuid}/tasks/{taskUuid}")
+    public ResponseEntity removeTaskFromProject(@PathVariable("projectUuid") UUID projectUuid, @PathVariable("taskUuid") UUID taskUuid) {
+        projectService.deleteTask(projectUuid, taskUuid);
+        return ResponseEntity.accepted().build();
+    }
 }
