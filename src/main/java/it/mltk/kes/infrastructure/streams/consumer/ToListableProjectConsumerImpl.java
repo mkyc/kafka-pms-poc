@@ -1,8 +1,9 @@
 package it.mltk.kes.infrastructure.streams.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.mltk.kes.infrastructure.jpa.model.ListableProject;
 import it.mltk.kes.domain.event.ProjectDomainEvent;
+import it.mltk.kes.infrastructure.jpa.model.ListableProject;
+import it.mltk.kes.infrastructure.jpa.service.ListableProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KStream;
@@ -16,10 +17,12 @@ import java.io.IOException;
 @Slf4j
 public class ToListableProjectConsumerImpl implements ToListableProjectConsumer {
 
-    ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+    private final ListableProjectService listableProjectService;
 
-    ToListableProjectConsumerImpl(ObjectMapper objectMapper) {
+    ToListableProjectConsumerImpl(final ObjectMapper objectMapper, final ListableProjectService listableProjectService) {
         this.objectMapper = objectMapper;
+        this.listableProjectService = listableProjectService;
     }
 
     @SuppressWarnings("Duplicates")
@@ -27,16 +30,17 @@ public class ToListableProjectConsumerImpl implements ToListableProjectConsumer 
     public void process(KStream<Object, byte[]> input) {
 
         input
-                .map((k, v) -> {
+                .map((key, value) -> {
                     try {
-                        ProjectDomainEvent projectDomainEvent = objectMapper.readValue(v, ProjectDomainEvent.class);
+                        ProjectDomainEvent projectDomainEvent = objectMapper.readValue(value, ProjectDomainEvent.class);
                         return new KeyValue<>(projectDomainEvent.getProjectUuid().toString(), ListableProject.fromEvent(projectDomainEvent));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     return null;
                 })
-                .peek((k, v) -> log.debug("key: " + k + " listableProject: " + v)); //TODO persist
+                .peek((key, value) -> log.debug("key: " + key + " listableProject: " + value))
+                .peek(((key, value) -> listableProjectService.store(value)));
     }
 
     interface DomainEventToListableConsumerBinding {

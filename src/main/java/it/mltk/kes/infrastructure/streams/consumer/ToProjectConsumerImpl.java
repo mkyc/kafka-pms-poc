@@ -19,7 +19,7 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 
 import java.io.IOException;
 
-import static it.mltk.kes.infrastructure.streams.configuration.ClientsConfig.PROJECTS_STORE;
+import static it.mltk.kes.infrastructure.configuration.StreamsClientsConfig.PROJECTS_STORE;
 
 
 @EnableBinding(ToProjectConsumerImpl.DomainEventConsumerBinding.class)

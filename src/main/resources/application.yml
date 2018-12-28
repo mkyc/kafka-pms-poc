@@ -21,7 +21,7 @@ spring:
         domain-event-to-listable-consumer:
           destination: events
           contentType: application/json
-          group: domain-event-to-listable-consumer-v1
+          group: domain-event-to-listable-consumer-v2
           consumer:
             useNativeDecoding: true
             headerMode: raw
@@ -32,6 +32,13 @@ spring:
             brokers: 127.0.0.1
             zkNodes: 127.0.0.1
             configuration.commit.interval.ms: 100
+  h2.console:
+    enabled: true
+    path: /h2
+  jpa:
+    properties.hibernate:
+      show_sql: true
+      format_sql: false
 
 logger.level:
   org.apache.kafka: DEBUG

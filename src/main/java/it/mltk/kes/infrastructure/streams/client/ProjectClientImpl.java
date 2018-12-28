@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
-import static it.mltk.kes.infrastructure.streams.configuration.ClientsConfig.PROJECTS_STORE;
+import static it.mltk.kes.infrastructure.configuration.StreamsClientsConfig.PROJECTS_STORE;
 
 @Component
 @Slf4j
